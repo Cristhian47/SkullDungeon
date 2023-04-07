@@ -357,6 +357,11 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.VSCode.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
+"Assets/Scripts/Arrow.cs"
+"Assets/Scripts/ArrowPooling.cs"
+"Assets/Scripts/Enemy.cs"
+"Assets/Scripts/GenerateEnemies.cs"
+"Assets/Scripts/GenerateTerrain.cs"
 "Assets/Scripts/PlayerAnimations.cs"
 "Assets/Scripts/PlayerController.cs"
 -langversion:9.0
