@@ -13,7 +13,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerAnimations _animation;
     [SerializeField] private ArrowPooling _arrowPool;
     private Rigidbody _rb;
-    
+    [SerializeField] private float _groundDistance = 0.2f;
+    [SerializeField] private LayerMask _groundLayer;
+    private bool _isGrounded = false;
 
     private void Awake()
     {
@@ -47,8 +49,21 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
+        // Verificar si el jugador está tocando el suelo
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, _groundDistance, _groundLayer))
+        {
+            _isGrounded = true;
+            Debug.DrawRay(transform.position, Vector3.down * hit.distance, Color.green);
+        }
+        else
+        {
+            _isGrounded = false;
+            Debug.DrawRay(transform.position, Vector3.down * _groundDistance, Color.red);
+        }
+
         // Salto del personaje
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (_isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
             _rb.AddForce(Vector2.up * _jumpForce, ForceMode.Impulse);
         }
