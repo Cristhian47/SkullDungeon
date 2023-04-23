@@ -2,21 +2,15 @@ using UnityEngine;
 
 public class ClickEffect : MonoBehaviour
 {
-    private GameObject _clickParticles;
-    private ParticleSystem _clickParticlesSystem;
-    private Ray _currentRay;
-    private RaycastHit _rayData;
+    private GameObject _clickCheck;
 
     private void Awake()
     {
-        _clickParticles = transform.GetChild(0).gameObject;
-        _clickParticlesSystem = _clickParticles.GetComponent<ParticleSystem>();
+        _clickCheck = transform.GetChild(0).gameObject;
     }
 
     public void DoEffect(Vector3 effectPosition)
     {
-        _clickParticles.transform.position = effectPosition;
-        _clickParticlesSystem.Stop();
-        _clickParticlesSystem.Play();
+        _clickCheck.transform.position = effectPosition;
     }
 }
