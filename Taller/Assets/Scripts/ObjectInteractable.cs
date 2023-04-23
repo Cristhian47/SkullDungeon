@@ -6,6 +6,16 @@ public class ObjectInteractable : MonoBehaviour
 {
     private bool _isDetecting;
 
+    public enum InteractionType
+    {
+        OpenDoor,
+        DialogWithNPC,
+        LootItem
+    }
+
+    [SerializeField] private InteractionType _currentInteractionType;
+    [SerializeField] private GameObject _doorToOpen;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -28,7 +38,7 @@ public class ObjectInteractable : MonoBehaviour
     {
         if (_isDetecting && Input.GetKeyDown(KeyCode.E))
         {
-            Debug.Log("Open The Door");
+            _doorToOpen.gameObject.SetActive(false);
         }
     }
 }

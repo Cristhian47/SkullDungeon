@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private Animator _playerAnimation;
 
     [SerializeField] private LayerMask _walkableLayer;
+    [SerializeField] private LayerMask _enemyLayer;
     
     void Start()
     {
@@ -23,15 +24,35 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             _currentRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if(Physics.Raycast(_currentRay, out _rayData, 100, _walkableLayer.value))
+
+            if (Physics.Raycast(_currentRay, out _rayData, 100, _enemyLayer.value))
             {
-                _playerAgent.SetDestination(_rayData.point);
-                _isRunning = true;
-                _playerAnimation.SetBool("IsRunning", true);
-                GameManager.Instance.CreateClickEffect(_rayData.point);
+                Attack();
+            }
+            else if (Physics.Raycast(_currentRay, out _rayData, 100, _walkableLayer.value))
+            {
+                Run();
             }
         }
-        if(_playerAgent.velocity == Vector3.zero)
+        FinishRun();
+    }
+
+    private void Attack()
+    {
+        Debug.Log("ATACAR ENEMIGO");
+    }
+
+    private void Run()
+    {
+        _playerAgent.SetDestination(_rayData.point);
+        _isRunning = true;
+        _playerAnimation.SetBool("IsRunning", true);
+        GameManager.Instance.CreateClickEffect(_rayData.point);
+    }
+
+    private void FinishRun()
+    {
+        if (_playerAgent.velocity == Vector3.zero)
         {
             _isRunning = false;
             _playerAnimation.SetBool("IsRunning", false);
