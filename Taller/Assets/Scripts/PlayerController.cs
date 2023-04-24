@@ -5,6 +5,7 @@ using UnityEngine.AI;
 public class PlayerController : MonoBehaviour
 {
     private bool _isRunning;
+    private bool _isAttacking;
     private NavMeshAgent _playerAgent;
     private Ray _currentRay;
     private RaycastHit _rayData;
@@ -12,6 +13,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private LayerMask _walkableLayer;
     [SerializeField] private LayerMask _enemyLayer;
+    [SerializeField] private float _attackDelay = 0.5f;
+    [SerializeField] private GameObject _attackArea;
     
     void Start()
     {
@@ -21,6 +24,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        //Si hizo clic en el juego verifica si es un enemigo o el suelo
         if (Input.GetMouseButtonDown(0))
         {
             _currentRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -37,11 +41,35 @@ public class PlayerController : MonoBehaviour
         FinishRun();
     }
 
+    //Si la distancia es menor a 2 atacar y si no, persigue
     private void Attack()
     {
-        Debug.Log("ATACAR ENEMIGO");
+        if (_isAttacking) return;
+
+        if(Vector3.Distance(transform.position, _rayData.point) < 2)
+        {
+            _isAttacking = true;
+            _playerAnimation.SetBool("Attack", true);
+            _attackArea.SetActive(true);
+            _rayData.collider.gameObject.SetActive(true);
+            StartCoroutine(FinishAttack());
+        }
+        else
+        {
+            _playerAgent.SetDestination(_rayData.point);
+        }
     }
 
+    //Espera a que acabe el tiempo delay de ataque para desactivarlo
+    public IEnumerator FinishAttack()
+    {
+        yield return new WaitForSeconds(_attackDelay);
+        _attackArea.SetActive(false);
+        _playerAnimation.SetBool("Attack", false);
+        _isAttacking = false;
+    }
+
+    //Mueve al jugador a la posición que hizo clic
     private void Run()
     {
         _playerAgent.SetDestination(_rayData.point);
@@ -50,6 +78,7 @@ public class PlayerController : MonoBehaviour
         GameManager.Instance.CreateClickEffect(_rayData.point);
     }
 
+    //Si el jugador está quieto, deja de hacer la animación de correr
     private void FinishRun()
     {
         if (_playerAgent.velocity == Vector3.zero)
