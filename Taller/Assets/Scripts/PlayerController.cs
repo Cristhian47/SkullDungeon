@@ -5,6 +5,7 @@ using UnityEngine.AI;
 public class PlayerController : MonoBehaviour
 {
     private bool _isRunning;
+    private bool _isAttacking;
     private NavMeshAgent _playerAgent;
     private Ray _currentRay;
     private RaycastHit _rayData;
@@ -12,6 +13,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private LayerMask _walkableLayer;
     [SerializeField] private LayerMask _enemyLayer;
+    [SerializeField] private float _attackDelay = 0.5f;
+    [SerializeField] private GameObject _attackArea;
     
     void Start()
     {
@@ -39,7 +42,28 @@ public class PlayerController : MonoBehaviour
 
     private void Attack()
     {
-        Debug.Log("ATACAR ENEMIGO");
+        if (_isAttacking) return;
+
+        if(Vector3.Distance(transform.position, _rayData.point) < 2)
+        {
+            _isAttacking = true;
+            _playerAnimation.SetBool("Attack", true);
+            _attackArea.SetActive(true);
+            _rayData.collider.gameObject.SetActive(true);
+            StartCoroutine(FinishAttack());
+        }
+        else
+        {
+            _playerAgent.SetDestination(_rayData.point);
+        }
+    }
+
+    public IEnumerator FinishAttack()
+    {
+        yield return new WaitForSeconds(_attackDelay);
+        _attackArea.SetActive(false);
+        _playerAnimation.SetBool("Attack", false);
+        _isAttacking = false;
     }
 
     private void Run()
