@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        //Si hizo clic en el juego verifica si es un enemigo o el suelo
         if (Input.GetMouseButtonDown(0))
         {
             _currentRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -40,6 +41,7 @@ public class PlayerController : MonoBehaviour
         FinishRun();
     }
 
+    //Si la distancia es menor a 2 atacar y si no, persigue
     private void Attack()
     {
         if (_isAttacking) return;
@@ -58,6 +60,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //Espera a que acabe el tiempo delay de ataque para desactivarlo
     public IEnumerator FinishAttack()
     {
         yield return new WaitForSeconds(_attackDelay);
@@ -66,6 +69,7 @@ public class PlayerController : MonoBehaviour
         _isAttacking = false;
     }
 
+    //Mueve al jugador a la posición que hizo clic
     private void Run()
     {
         _playerAgent.SetDestination(_rayData.point);
@@ -74,6 +78,7 @@ public class PlayerController : MonoBehaviour
         GameManager.Instance.CreateClickEffect(_rayData.point);
     }
 
+    //Si el jugador está quieto, deja de hacer la animación de correr
     private void FinishRun()
     {
         if (_playerAgent.velocity == Vector3.zero)
